@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐱 Gatitos Genéricos | Página de Gatos</title>
+    <style>
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fdf8f3 0%, #ffe9d6 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* Encabezado */
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: #4a2c2c;
+            text-shadow: 3px 3px 0 #ffb882;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #7a5a4a;
+            background: rgba(255, 255, 255, 0.6);
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Galería */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.8rem;
+            margin: 2rem 0 3rem;
+        }
+
+        .cat-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 2px solid #ffe0c4;
+        }
+
+        .cat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 40px rgba(230, 120, 60, 0.25);
+            border-color: #ffb882;
+        }
+
+        .cat-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+            background: #f0e0d0;
+            transition: transform 0.4s;
+        }
+
+        .cat-card:hover .cat-img {
+            transform: scale(1.05);
+        }
+
+        .cat-info {
+            padding: 1.2rem 1.2rem 1.5rem;
+            text-align: center;
+        }
+
+        .cat-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4a2c2c;
+            margin-bottom: 0.4rem;
+        }
+
+        .cat-desc {
+            color: #7a5a4a;
+            font-size: 1rem;
+            line-height: 1.4;
+            font-style: italic;
+        }
+
+        /* Botón para recargar fotos */
+        .btn-refresh {
+            background: #ff9f5a;
+            color: white;
+            border: none;
+            font-size: 1.3rem;
+            font-weight: 600;
+            padding: 1rem 2.5rem;
+            border-radius: 60px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #c96f2e, 0 8px 20px rgba(0,0,0,0.15);
+            transition: all 0.1s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 1px;
+            margin: 0 auto 1rem;
+        }
+
+        .btn-refresh:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #c96f2e, 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .btn-refresh:hover {
+            background: #ffa96b;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            color: #8a6a5a;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            border-top: 2px dashed #ffd9b5;
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        /* Loading / estado */
+        .loading-text {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #a55a3a;
+            padding: 3rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            h1 { font-size: 2.2rem; }
+            .gallery { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐈 GATOS GATOS GATOS 🐈‍⬛</h1>
+            <div class="subtitle">Fotos genéricas de michis lindos</div>
+        </header>
+
+        <!-- Galería de gatos -->
+        <div id="gallery" class="gallery">
+            <!-- Las tarjetas se generan con JavaScript -->
+            <div class="loading-text">Cargando michis... 🐾</div>
+        </div>
+
+        <!-- Botón para recargar -->
+        <div style="display: flex; justify-content: center;">
+            <button id="refreshBtn" class="btn-refresh">
+                🔄 Recargar michis
+            </button>
+        </div>
+
+        <footer>
+            Hecho con ❤️ para los amantes de los gatos · Fotos vía <a href="https://cataas.com" target="_blank" style="color: #c96f2e;">Cataas</a>
+        </footer>
+    </div>
+
+    <script>
+        (function() {
+            // Nombres y descripciones genéricas para darle un toque tierno
+            const nombres = [
+                "Michi", "Pelusa", "Bigotes", "Michi Jr.", "Gatito", "Minino",
+                "Misi", "Gato Bonito", "Michi Feliz", "Don Gato", "Tigre",
+                "Nube", "Coco", "Luna", "Sol", "Copito", "Manchas"
+            ];
+
+            const descripciones = [
+                "Un gatito genérico pero adorable.",
+                "Le encanta dormir en cajas de cartón.",
+                "Experto en ronroneos y siestas.",
+                "Cazador profesional de láseres.",
+                "Su pasatiempo favorito es tirar cosas.",
+                "Maestro del arte de ignorarte.",
+                "Fanático de los atunes y los mimos.",
+                "Siempre listo para una foto.",
+                "Gato 100% genérico y 100% lindo.",
+                "Podría ser tu nuevo mejor amigo.",
+                "Mira fijamente hasta que le des comida.",
+                "Profesional en hacer bizcochitos."
+            ];
+
+            // Función para obtener una URL de imagen de gato aleatoria con un parámetro único
+            // para evitar caché y que cambie cada vez.
+            function getCatImageUrl(index) {
+                // Usamos cataas.com con un parámetro ?timestamp para forzar nueva imagen
+                // También añadimos un texto opcional para que sea más divertido
+                const seed = Date.now() + index * 1000;
+                // Cataas permite /cat?timestamp para imagen aleatoria
+                // También hay /cat/says/... pero preferimos imagen simple
+                return `https://cataas.com/cat?${seed}`;
+            }
+
+            // Función para generar las tarjetas
+            function renderCats() {
+                const gallery = document.getElementById('gallery');
+                // Limpiar galería
+                gallery.innerHTML = '';
+
+                // Número de gatos a mostrar (6 para que quede bonito)
+                const numCats = 6;
+
+                for (let i = 0; i < numCats; i++) {
+                    // Elegir nombre y descripción al azar
+                    const nombre = nombres[Math.floor(Math.random() * nombres.length)];
+                    const desc = descripciones[Math.floor(Math.random() * descripciones.length)];
+                    // Construir URL de imagen
+                    const imgUrl = getCatImageUrl(i);
+
+                    // Crear tarjeta
+                    const card = document.createElement('div');
+                    card.className = 'cat-card';
+
+                    // Imagen con onerror para mostrar una imagen de respaldo (por si falla la API)
+                    const img = document.createElement('img');
+                    img.className = 'cat-img';
+                    img.src = imgUrl;
+                    img.alt = `Foto de ${nombre}`;
+                    img.loading = 'lazy';
+                    // Si la imagen falla, usamos un placeholder de gato genérico
+                    img.onerror = function() {
+                        this.src = 'https://placekitten.com/400/300'; // Placekitten como fallback
+                        // Si placekitten también falla, mostramos un div
+                        this.onerror = function() {
+                            this.style.display = 'none';
+                            const parent = this.parentNode;
+                            const fallbackDiv = document.createElement('div');
+                            fallbackDiv.className = 'cat-img';
+                            fallbackDiv.style.display = 'flex';
+                            fallbackDiv.style.alignItems = 'center';
+                            fallbackDiv.style.justifyContent = 'center';
+                            fallbackDiv.style.background = '#e0c0a0';
+                            fallbackDiv.style.color = '#5a3a2a';
+                            fallbackDiv.style.fontSize = '3rem';
+                            fallbackDiv.textContent = '🐱';
+                            parent.insertBefore(fallbackDiv, this);
+                        };
+                    };
+
+                    // Info
+                    const infoDiv = document.createElement('div');
+                    infoDiv.className = 'cat-info';
+                    infoDiv.innerHTML = `
+                        <div class="cat-name">${nombre}</div>
+                        <div class="cat-desc">${desc}</div>
+                    `;
+
+                    card.appendChild(img);
+                    card.appendChild(infoDiv);
+                    gallery.appendChild(card);
+                }
+            }
+
+            // Manejar el botón de recargar
+            const refreshBtn = document.getElementById('refreshBtn');
+            refreshBtn.addEventListener('click', function() {
+                // Mostrar estado de carga
+                const gallery = document.getElementById('gallery');
+                gallery.innerHTML = '<div class="loading-text">Buscando nuevos michis... 🐾</div>';
+                // Pequeño retardo para que se note el cambio
+                setTimeout(() => {
+                    renderCats();
+                }, 200);
+            });
+
+            // Cargar gatos al inicio
+            window.addEventListener('DOMContentLoaded', renderCats);
+        })();
+    </script>
+</body>
+</html>
