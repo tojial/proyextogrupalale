@@ -1,0 +1,2540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ragnarok eSports - Plataforma Gaming</title>
+  
+  <!-- jQuery 3.7.1 CDN -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ========== VARIABLES GLOBALES ========== */
+    :root {
+      --green-main: #16A34A;
+      --green-dark: #052E16;
+      --green-bright: #22C55E;
+      --black-main: #080B09;
+      --black-sec: #111713;
+      --white: #FFFFFF;
+      --gray: #A3A3A3;
+      --card-bg: #111713;
+      --border: #1a2e1f;
+      --glow: rgba(22, 163, 74, 0.4);
+      --red: #dc2626;
+      --yellow: #ffcc00;
+      --sidebar-width: 280px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+      background: var(--black-main);
+      color: var(--white);
+      line-height: 1.6;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Orbitron', 'Segoe UI', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* ========== SCROLLBAR ========== */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--black-main); }
+    ::-webkit-scrollbar-thumb { background: var(--green-main); border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--green-bright); }
+
+    /* ========== BOTÓN HAMBURGUESA ========== */
+    .hamburger-btn {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 1100;
+      background: var(--green-main);
+      border: none;
+      color: var(--white);
+      font-size: 1.5rem;
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(22, 163, 74, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    .hamburger-btn:hover {
+      background: var(--green-bright);
+      transform: scale(1.05);
+    }
+
+    /* ========== OVERLAY ========== */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .overlay.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* ========== MENÚ LATERAL ========== */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: var(--sidebar-width);
+      height: 100vh;
+      background: var(--black-sec);
+      border-right: 2px solid var(--green-main);
+      z-index: 1050;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      box-shadow: 4px 0 30px rgba(22, 163, 74, 0.2);
+      overflow-y: auto;
+    }
+
+    .sidebar.open {
+      transform: translateX(0);
+    }
+
+    .sidebar-header {
+      padding: 1.2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .sidebar-header img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px var(--green-main));
+    }
+
+    .sidebar-header .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header .brand-text span:first-child {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--white);
+      text-shadow: 0 0 15px var(--green-main);
+      line-height: 1.2;
+    }
+
+    .sidebar-header .brand-text span:last-child {
+      font-size: 0.55rem;
+      letter-spacing: 0.3em;
+      color: var(--green-bright);
+      font-weight: 400;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 0.8rem 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.7rem 1rem;
+      border-radius: 10px;
+      color: var(--gray);
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+    }
+
+    .nav-btn:hover {
+      background: rgba(22, 163, 74, 0.1);
+      color: var(--green-bright);
+      border-color: rgba(22, 163, 74, 0.3);
+    }
+
+    .nav-btn.active {
+      background: linear-gradient(90deg, rgba(22, 163, 74, 0.25), rgba(22, 163, 74, 0.05));
+      color: var(--green-bright);
+      border-color: var(--green-main);
+      box-shadow: 0 0 15px rgba(22, 163, 74, 0.2);
+      position: relative;
+    }
+
+    .nav-btn.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 20%;
+      height: 60%;
+      width: 3px;
+      background: var(--green-bright);
+      border-radius: 0 3px 3px 0;
+      box-shadow: 0 0 10px var(--green-bright);
+    }
+
+    .nav-icon {
+      font-size: 1.15rem;
+      width: 22px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 1rem 1.2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.7rem;
+      color: var(--gray);
+      text-align: center;
+      line-height: 1.5;
+      flex-shrink: 0;
+    }
+
+    .sidebar-footer .copyright {
+      color: var(--green-main);
+      font-weight: 700;
+    }
+
+    /* ========== ÁREA PRINCIPAL ========== */
+    .main-panel {
+      flex: 1;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 1.5rem 2rem 2rem 5rem;
+      background: var(--black-main);
+      position: relative;
+      scrollbar-width: thin;
+      scrollbar-color: var(--green-main) var(--black-sec);
+      width: 100%;
+    }
+
+    .main-panel::-webkit-scrollbar { width: 8px; }
+    .main-panel::-webkit-scrollbar-track { background: var(--black-sec); }
+    .main-panel::-webkit-scrollbar-thumb { background: var(--green-main); border-radius: 4px; }
+
+    /* ========== SECCIONES ========== */
+    .page-section {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .page-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ========== TÍTULOS ========== */
+    .section-title {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .section-title h2 {
+      font-size: 1.8rem;
+      color: var(--white);
+      display: inline-block;
+      position: relative;
+      text-shadow: 0 0 20px rgba(22, 163, 74, 0.5);
+    }
+
+    .section-title h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--green-main), var(--green-bright));
+      border-radius: 2px;
+      box-shadow: 0 0 15px var(--green-main);
+    }
+
+    .section-title p {
+      color: var(--gray);
+      margin-top: 1.2rem;
+      font-size: 0.95rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ========== HERO ========== */
+    .hero {
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      background: radial-gradient(ellipse at center, rgba(22, 163, 74, 0.15) 0%, transparent 70%);
+      border-radius: 20px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-logo {
+      width: 100px;
+      margin-bottom: 1rem;
+      filter: drop-shadow(0 0 30px var(--green-main));
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, var(--white) 0%, var(--green-bright) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.8rem;
+    }
+
+    .hero p {
+      font-size: 1rem;
+      color: var(--gray);
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ========== BOTONES ========== */
+    .btn {
+      display: inline-block;
+      padding: 0.7rem 1.8rem;
+      background: linear-gradient(135deg, var(--green-main), var(--green-dark));
+      color: var(--white);
+      text-decoration: none;
+      border-radius: 50px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(22, 163, 74, 0.4);
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn:hover::before { left: 100%; }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 35px rgba(22, 163, 74, 0.7);
+    }
+
+    .btn-sm {
+      padding: 0.45rem 1.1rem;
+      font-size: 0.65rem;
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, var(--red), #991b1b);
+      box-shadow: 0 0 20px rgba(220, 38, 38, 0.4);
+    }
+
+    .btn-danger:hover {
+      box-shadow: 0 0 35px rgba(220, 38, 38, 0.7);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--green-bright);
+      color: var(--green-bright);
+      box-shadow: none;
+    }
+
+    .btn-outline:hover {
+      background: rgba(34, 197, 94, 0.1);
+      box-shadow: 0 0 20px var(--glow);
+    }
+
+    /* ========== GRIDS ========== */
+    .cards-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+    /* ========== CARDS ========== */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.2rem;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--green-main), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: var(--green-main);
+      box-shadow: 0 0 25px var(--glow);
+    }
+
+    .card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 0.8rem;
+    }
+
+    .card .card-icon {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      margin: 0 auto 0.6rem;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      color: var(--white);
+      margin-bottom: 0.3rem;
+    }
+
+    .card .role {
+      color: var(--green-bright);
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.4rem;
+    }
+
+    .card .desc {
+      color: var(--gray);
+      font-size: 0.85rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .card .price {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--green-bright);
+      margin: 0.4rem 0;
+      text-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+    }
+
+    .card .badge {
+      display: inline-block;
+      background: var(--green-main);
+      color: var(--white);
+      padding: 0.15rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.6rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4rem;
+    }
+
+    .card .badge-new { background: var(--green-bright); color: var(--black-main); }
+    .card .badge-featured { background: #ff6b00; }
+
+    /* ========== ESTADÍSTICAS ========== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-box:hover {
+      border-color: var(--green-main);
+      box-shadow: 0 0 20px var(--glow);
+    }
+
+    .stat-box .stat-number {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--green-bright);
+      display: block;
+      text-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+    }
+
+    .stat-box .stat-label {
+      font-size: 0.75rem;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* ========== FORMULARIOS ========== */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.4rem;
+      color: var(--gray);
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      background: var(--black-main);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--white);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.9rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--green-main);
+      box-shadow: 0 0 10px rgba(22, 163, 74, 0.3);
+    }
+
+    .form-group input.error,
+    .form-group select.error,
+    .form-group textarea.error {
+      border-color: var(--red);
+      box-shadow: 0 0 10px rgba(220, 38, 38, 0.3);
+    }
+
+    .form-group .error-msg {
+      color: var(--red);
+      font-size: 0.75rem;
+      margin-top: 0.3rem;
+      display: none;
+    }
+
+    .form-group input.valid,
+    .form-group select.valid {
+      border-color: var(--green-bright);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .player-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 0.8rem;
+      margin-bottom: 0.8rem;
+      padding: 0.8rem;
+      background: rgba(22, 163, 74, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      align-items: end;
+    }
+
+    .remove-player {
+      background: var(--red);
+      border: none;
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .remove-player:hover {
+      background: #991b1b;
+    }
+
+    /* ========== FILTROS ========== */
+    .filters-bar {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      align-items: center;
+    }
+
+    .filters-bar input,
+    .filters-bar select {
+      padding: 0.5rem 1rem;
+      background: var(--black-main);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--white);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.85rem;
+      flex: 1;
+      min-width: 140px;
+      max-width: 220px;
+      transition: border-color 0.3s ease;
+    }
+
+    .filters-bar input:focus,
+    .filters-bar select:focus {
+      outline: none;
+      border-color: var(--green-main);
+      box-shadow: 0 0 10px rgba(22, 163, 74, 0.3);
+    }
+
+    .filters-bar input::placeholder {
+      color: #555;
+    }
+
+    .category-pills {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .category-pill {
+      padding: 0.4rem 1rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      color: var(--gray);
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .category-pill:hover,
+    .category-pill.active {
+      background: var(--green-main);
+      color: var(--white);
+      border-color: var(--green-main);
+      box-shadow: 0 0 15px var(--glow);
+    }
+
+    /* ========== TABLAS ========== */
+    .table-responsive {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    thead {
+      background: var(--green-main);
+    }
+
+    thead th {
+      padding: 0.7rem 0.8rem;
+      text-align: left;
+      color: var(--white);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background: rgba(22, 163, 74, 0.1);
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+
+    tbody td {
+      padding: 0.6rem 0.8rem;
+      color: var(--gray);
+    }
+
+    tbody td:first-child {
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    .timestamp-cell {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.7rem;
+      color: var(--green-bright);
+    }
+
+    /* ========== RELOJ ========== */
+    .clock-panel {
+      background: var(--card-bg);
+      border: 2px solid var(--green-main);
+      border-radius: 20px;
+      padding: 1.8rem;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(22, 163, 74, 0.2);
+      margin-bottom: 1.8rem;
+    }
+
+    .clock-panel .clock-label {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      color: var(--green-bright);
+      letter-spacing: 0.3em;
+      margin-bottom: 0.6rem;
+    }
+
+    .clock-panel .clock-time {
+      font-family: 'Orbitron', monospace;
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--white);
+      text-shadow: 0 0 20px var(--green-main), 0 0 40px var(--glow);
+      letter-spacing: 0.05em;
+      line-height: 1;
+    }
+
+    .clock-panel .clock-date {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.95rem;
+      color: var(--gray);
+      margin-top: 0.4rem;
+      letter-spacing: 0.15em;
+    }
+
+    .clock-panel .clock-timestamp {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.8rem;
+      color: var(--gray);
+    }
+
+    .clock-panel .clock-timestamp strong {
+      color: var(--green-bright);
+      font-family: 'Orbitron', monospace;
+    }
+
+    /* ========== ESTADÍSTICAS EVENTOS ========== */
+    .events-stats {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-item .stat-value {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--green-bright);
+      display: block;
+    }
+
+    .stat-item .stat-label {
+      font-size: 0.7rem;
+      color: var(--gray);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* ========== CONTROLES EVENTOS ========== */
+    .events-controls {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ========== DEMO JQUERY ========== */
+    .jquery-demo {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-top: 1.5rem;
+    }
+
+    .jquery-demo h3 {
+      color: var(--green-bright);
+      font-size: 0.9rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .demo-buttons {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .demo-box {
+      margin-top: 0.8rem;
+      padding: 0.8rem;
+      background: rgba(22, 163, 74, 0.1);
+      border: 1px dashed var(--green-main);
+      border-radius: 8px;
+      text-align: center;
+      color: var(--gray);
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+    }
+
+    /* ========== DETALLE PRODUCTO ========== */
+    .product-detail {
+      display: none;
+      margin-top: 0.8rem;
+      padding: 1rem;
+      background: rgba(22, 163, 74, 0.05);
+      border: 1px solid var(--green-main);
+      border-radius: 10px;
+      text-align: left;
+    }
+
+    .product-detail h4 {
+      color: var(--green-bright);
+      font-size: 0.8rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .product-detail ul {
+      list-style: none;
+    }
+
+    .product-detail ul li {
+      padding: 0.25rem 0;
+      font-size: 0.8rem;
+      color: var(--gray);
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .product-detail ul li:last-child { border-bottom: none; }
+
+    .product-detail ul li span {
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    /* ========== CONTACTO ========== */
+    .contact-info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .contact-info-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .contact-info-card:hover {
+      border-color: var(--green-main);
+      box-shadow: 0 0 20px var(--glow);
+    }
+
+    .contact-info-card .contact-icon {
+      font-size: 2rem;
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .contact-info-card h4 {
+      color: var(--green-bright);
+      font-size: 0.9rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .contact-info-card p {
+      color: var(--gray);
+      font-size: 0.85rem;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: center;
+      margin-top: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .social-links a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      background: rgba(22, 163, 74, 0.1);
+      border: 1px solid var(--green-main);
+      border-radius: 50%;
+      color: var(--green-main);
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+      background: var(--green-main);
+      color: var(--white);
+      box-shadow: 0 0 20px rgba(22, 163, 74, 0.5);
+      transform: translateY(-3px) scale(1.1);
+    }
+
+    /* ========== MENSAJES ========== */
+    .alert {
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      display: none;
+    }
+
+    .alert-success {
+      background: rgba(22, 163, 74, 0.15);
+      border: 1px solid var(--green-main);
+      color: var(--green-bright);
+    }
+
+    .alert-error {
+      background: rgba(220, 38, 38, 0.15);
+      border: 1px solid var(--red);
+      color: #ff6666;
+    }
+
+    /* ========== PREVIEW INSCRIPCIÓN ========== */
+    .preview-box {
+      background: rgba(22, 163, 74, 0.05);
+      border: 1px solid var(--green-main);
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin: 1rem 0;
+      display: none;
+    }
+
+    .preview-box h4 {
+      color: var(--green-bright);
+      margin-bottom: 0.8rem;
+      font-size: 0.9rem;
+    }
+
+    .preview-box p {
+      color: var(--gray);
+      font-size: 0.85rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .preview-box p strong {
+      color: var(--white);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 1024px) {
+      .hero h1 { font-size: 2rem; }
+      .clock-panel .clock-time { font-size: 2.2rem; }
+    }
+
+    @media (max-width: 768px) {
+      .main-panel {
+        padding: 4.5rem 1rem 1rem;
+      }
+
+      .hero h1 { font-size: 1.6rem; }
+      .hero p { font-size: 0.9rem; }
+      .clock-panel .clock-time { font-size: 1.5rem; }
+      .section-title h2 { font-size: 1.4rem; }
+
+      .cards-grid.grid-2,
+      .cards-grid.grid-3,
+      .cards-grid.grid-4 { grid-template-columns: 1fr; }
+
+      .form-row { grid-template-columns: 1fr; }
+      .player-row { grid-template-columns: 1fr; gap: 0.5rem; }
+      .remove-player { width: 100%; height: 32px; }
+
+      table { font-size: 0.7rem; }
+      thead th, tbody td { padding: 0.4rem; }
+
+      .filters-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filters-bar input,
+      .filters-bar select {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 1.3rem; }
+      .hero-buttons { flex-direction: column; align-items: center; }
+      .btn { width: 100%; max-width: 250px; }
+      .clock-panel .clock-time { font-size: 1.2rem; }
+      .events-stats { flex-direction: column; gap: 0.8rem; }
+      .demo-buttons { flex-direction: column; }
+      .demo-buttons .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Botón Hamburguesa -->
+<button class="hamburger-btn" id="hamburgerBtn" title="Menú">☰</button>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay"></div>
+
+<!-- ==================== APP CONTAINER ==================== -->
+<div class="app-container">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <img src="logo portda.jpeg" alt="Ragnarok Logo">
+      <div class="brand-text">
+        <span>RAGNAROK</span>
+        <span>ESPORTS</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-btn active" data-section="inicio">
+        <span class="nav-icon">🏠</span> Inicio
+      </button>
+      <button class="nav-btn" data-section="equipo">
+        <span class="nav-icon">👥</span> Equipo
+      </button>
+      <button class="nav-btn" data-section="juegos">
+        <span class="nav-icon">🎮</span> Juegos
+      </button>
+      <button class="nav-btn" data-section="torneos">
+        <span class="nav-icon">🏆</span> Torneos
+      </button>
+      <button class="nav-btn" data-section="inscripcion">
+        <span class="nav-icon">📝</span> Inscripción de Equipos
+      </button>
+      <button class="nav-btn" data-section="productos">
+        <span class="nav-icon">🛒</span> Productos / Tienda
+      </button>
+      <button class="nav-btn" data-section="patrocinadores">
+        <span class="nav-icon">🤝</span> Patrocinadores
+      </button>
+      <button class="nav-btn" data-section="eventos">
+        <span class="nav-icon">⏱️</span> Eventos & Timestamp
+      </button>
+      <button class="nav-btn" data-section="contacto">
+        <span class="nav-icon">📞</span> Contacto
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <p>© 2026 <span class="copyright">Ragnarok eSports</span></p>
+      <p style="font-size:0.65rem;margin-top:0.3rem;">Plataforma Gaming 🏆</p>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN PANEL ===== -->
+  <main class="main-panel" id="mainPanel">
+
+    <!-- ===== SECCIÓN: INICIO ===== -->
+    <div class="page-section active" id="page-inicio">
+      <div class="hero">
+        <img src="logo portda.jpeg" alt="Ragnarok eSports" class="hero-logo">
+        <h1>RAGNAROK ESPORTS</h1>
+        <p>Nuestro destino no está escrito, lo forjamos en la batalla. Competimos en Valorant, CS2 y League of Legends.</p>
+        <div class="hero-buttons">
+          <button class="btn" onclick="showSection('torneos')">Consultar Torneos</button>
+          <button class="btn btn-outline" onclick="showSection('inscripcion')">Inscribir Equipo</button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="stat-number">7</span>
+          <span class="stat-label">Jugadores</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">3</span>
+          <span class="stat-label">Juegos</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">4</span>
+          <span class="stat-label">Torneos Activos</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">12+</span>
+          <span class="stat-label">Victorias</span>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:2rem;">
+        <h2>Próximos Eventos</h2>
+      </div>
+      <div class="cards-grid grid-3">
+        <div class="card">
+          <img src="logogamer.jpeg" alt="Chukuta Gamer">
+          <span class="badge">Valorant</span>
+          <h3>Chukuta Gamer 2026</h3>
+          <p class="desc">12 - 18 Junio 2026</p>
+          <p style="color:var(--green-bright);font-weight:700;">En cuartos de final</p>
+        </div>
+        <div class="card">
+          <img src="torneo2.jpeg" alt="Latam Championship">
+          <span class="badge">Valorant</span>
+          <h3>Latam Valorant Championship</h3>
+          <p class="desc">26 - 28 Junio 2026</p>
+          <p style="color:var(--green-bright);font-weight:700;">Fase de grupos</p>
+        </div>
+        <div class="card">
+          <img src="torneo3.jpeg" alt="Liga Boliviana CS2">
+          <span class="badge">CS2</span>
+          <h3>Liga Boliviana CS2</h3>
+          <p class="desc">Mayo - Julio 2026</p>
+          <p style="color:var(--green-bright);font-weight:700;">En curso</p>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:2rem;">
+        <h2>Productos Destacados</h2>
+      </div>
+      <div class="cards-grid grid-3" id="productosDestacadosInicio"></div>
+    </div>
+
+    <!-- ===== SECCIÓN: EQUIPO ===== -->
+    <div class="page-section" id="page-equipo">
+      <div class="section-title">
+        <h2>Nuestro Equipo</h2>
+        <p>Jugadores profesionales de Ragnarok eSports</p>
+      </div>
+
+      <div class="filters-bar">
+        <select id="filtroJuegoEquipo">
+          <option value="todos">Todos los juegos</option>
+          <option value="valorant">Valorant</option>
+          <option value="cs2">CS2</option>
+          <option value="lol">League of Legends</option>
+        </select>
+        <select id="filtroRolEquipo">
+          <option value="todos">Todos los roles</option>
+          <option value="duelist">Duelist</option>
+          <option value="support">Support</option>
+          <option value="igl">IGL</option>
+          <option value="entry">Entry Fragger</option>
+          <option value="mid">Mid Laner</option>
+          <option value="jungla">Jungla</option>
+          <option value="controller">Controller</option>
+        </select>
+      </div>
+
+      <div class="cards-grid grid-4" id="equipoGrid">
+        <div class="card equipo-card" data-juego="valorant" data-rol="duelist">
+          <img src="jugador1.png" alt="Yupix">
+          <span class="badge">Valorant</span>
+          <h3>Yupix</h3>
+          <p class="role">Duelist</p>
+          <p class="desc">K/D: 1.35 | MVP: 12</p>
+        </div>
+        <div class="card equipo-card" data-juego="valorant" data-rol="support">
+          <img src="jugador1.png" alt="Harit">
+          <span class="badge">Valorant</span>
+          <h3>Harit</h3>
+          <p class="role">Support</p>
+          <p class="desc">Asistencias: 200+</p>
+        </div>
+        <div class="card equipo-card" data-juego="cs2" data-rol="igl">
+          <img src="jugador1.png" alt="Chizin">
+          <span class="badge">CS2</span>
+          <h3>Chizin</h3>
+          <p class="role">IGL</p>
+          <p class="desc">Estratega principal</p>
+        </div>
+        <div class="card equipo-card" data-juego="cs2" data-rol="entry">
+          <img src="jugador1.png" alt="Kael">
+          <span class="badge">CS2</span>
+          <h3>Kael</h3>
+          <p class="role">Entry Fragger</p>
+          <p class="desc">HS%: 48%</p>
+        </div>
+        <div class="card equipo-card" data-juego="lol" data-rol="mid">
+          <img src="jugador1.png" alt="Nero">
+          <span class="badge">LoL</span>
+          <h3>Nero</h3>
+          <p class="role">Mid Laner</p>
+          <p class="desc">KDA: 4.2</p>
+        </div>
+        <div class="card equipo-card" data-juego="lol" data-rol="jungla">
+          <img src="jugador1.png" alt="Lynx">
+          <span class="badge">LoL</span>
+          <h3>Lynx</h3>
+          <p class="role">Jungla</p>
+          <p class="desc">Objetivos: 90%</p>
+        </div>
+        <div class="card equipo-card" data-juego="valorant" data-rol="controller">
+          <img src="jugador1.png" alt="Raze">
+          <span class="badge">Valorant</span>
+          <h3>Raze</h3>
+          <p class="role">Controller</p>
+          <p class="desc">Clutch: 15</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECCIÓN: JUEGOS ===== -->
+    <div class="page-section" id="page-juegos">
+      <div class="section-title">
+        <h2>Juegos de la Temporada</h2>
+        <p>Competiciones oficiales de Ragnarok eSports</p>
+      </div>
+      <div class="cards-grid grid-3">
+        <div class="card">
+          <img src="juego1.jpeg" alt="Valorant">
+          <span class="badge">Valorant</span>
+          <h3>Valorant</h3>
+          <p class="desc">Shooter táctico 5v5 con agentes y habilidades únicas.</p>
+          <p style="color:var(--green-bright);font-weight:700;margin-top:0.5rem;">3 torneos activos</p>
+        </div>
+        <div class="card">
+          <img src="juego2.jpeg" alt="CS2">
+          <span class="badge">CS2</span>
+          <h3>Counter-Strike 2</h3>
+          <p class="desc">El clásico shooter competitivo con gráficos actualizados.</p>
+          <p style="color:var(--green-bright);font-weight:700;margin-top:0.5rem;">2 torneos activos</p>
+        </div>
+        <div class="card">
+          <img src="jugador1.png" alt="LoL">
+          <span class="badge">LoL</span>
+          <h3>League of Legends</h3>
+          <p class="desc">MOBA 5v5 con campeones y estrategia por equipos.</p>
+          <p style="color:var(--green-bright);font-weight:700;margin-top:0.5rem;">1 torneo activo</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECCIÓN: TORNEOS ===== -->
+    <div class="page-section" id="page-torneos">
+      <div class="section-title">
+        <h2>Torneos</h2>
+        <p>Competiciones donde Ragnarok eSports participa</p>
+      </div>
+
+      <div class="filters-bar">
+        <select id="filtroJuegoTorneo">
+          <option value="todos">Todos los juegos</option>
+          <option value="valorant">Valorant</option>
+          <option value="cs2">CS2</option>
+          <option value="lol">League of Legends</option>
+        </select>
+        <select id="filtroEstadoTorneo">
+          <option value="todos">Todos los estados</option>
+          <option value="proximo">Próximamente</option>
+          <option value="encurso">En curso</option>
+          <option value="finalizado">Finalizado</option>
+        </select>
+      </div>
+
+      <div class="cards-grid grid-3" id="torneosGrid">
+        <div class="card torneo-card" data-juego="valorant" data-estado="encurso">
+          <img src="logogamer.jpeg" alt="Chukuta Gamer 2026">
+          <span class="badge">Valorant</span>
+          <h3>Chukuta Gamer 2026</h3>
+          <p class="desc">Eliminación directa | 12 - 18 Junio 2026</p>
+          <p class="desc">Equipos: 16 | Premio: $1000</p>
+          <p style="color:var(--green-bright);font-weight:700;">En cuartos de final</p>
+        </div>
+        <div class="card torneo-card" data-juego="valorant" data-estado="encurso">
+          <img src="torneo2.jpeg" alt="Latam Championship">
+          <span class="badge">Valorant</span>
+          <h3>Latam Valorant Championship</h3>
+          <p class="desc">Grupos + Playoffs | 26 - 28 Junio 2026</p>
+          <p class="desc">Equipos: 12 | Premio: $2500</p>
+          <p style="color:var(--green-bright);font-weight:700;">Fase de grupos</p>
+        </div>
+        <div class="card torneo-card" data-juego="cs2" data-estado="encurso">
+          <img src="torneo3.jpeg" alt="Liga Boliviana CS2">
+          <span class="badge">CS2</span>
+          <h3>Liga Boliviana CS2</h3>
+          <p class="desc">Round Robin | Mayo - Julio 2026</p>
+          <p class="desc">Equipos: 8 | Premio: $800</p>
+          <p style="color:var(--green-bright);font-weight:700;">En curso</p>
+        </div>
+        <div class="card torneo-card" data-juego="lol" data-estado="proximo">
+          <img src="torneo2.jpeg" alt="League Regional Cup">
+          <span class="badge">LoL</span>
+          <h3>League Regional Cup</h3>
+          <p class="desc">Eliminación doble | Agosto 2026</p>
+          <p class="desc">Equipos: 8 | Premio: $1500</p>
+          <p style="color:var(--yellow);font-weight:700;">Próximamente</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECCIÓN: INSCRIPCIÓN DE EQUIPOS ===== -->
+    <div class="page-section" id="page-inscripcion">
+      <div class="section-title">
+        <h2>Inscripción de Equipos</h2>
+        <p>Registra tu equipo para participar en los torneos de Ragnarok eSports</p>
+      </div>
+
+      <div style="max-width:900px; margin:0 auto;">
+        <div class="alert alert-success" id="inscripcionSuccess"></div>
+        <div class="alert alert-error" id="inscripcionError"></div>
+
+        <form id="formInscripcion" style="background:var(--card-bg); border:1px solid var(--border); border-radius:16px; padding:2rem;" novalidate>
+          
+          <h3 style="color:var(--green-bright); font-size:1rem; margin-bottom:1rem;">📋 Información del Equipo</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombre del Equipo *</label>
+              <input type="text" id="teamName" required placeholder="Ej: Ragnarok Alpha">
+              <span class="error-msg" id="err-teamName">Este campo es obligatorio</span>
+            </div>
+            <div class="form-group">
+              <label>Juego *</label>
+              <select id="teamGame" required>
+                <option value="">Seleccionar juego</option>
+                <option value="valorant">Valorant (5 jugadores)</option>
+                <option value="cs2">CS2 (5 jugadores)</option>
+                <option value="lol">League of Legends (5 jugadores)</option>
+              </select>
+              <span class="error-msg" id="err-teamGame">Selecciona un juego</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombre del Capitán *</label>
+              <input type="text" id="teamCaptain" required placeholder="Nombre completo">
+              <span class="error-msg" id="err-teamCaptain">Este campo es obligatorio</span>
+            </div>
+            <div class="form-group">
+              <label>Correo Electrónico *</label>
+              <input type="email" id="teamEmail" required placeholder="correo@ejemplo.com">
+              <span class="error-msg" id="err-teamEmail">Ingresa un correo válido</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Número de Celular *</label>
+              <input type="tel" id="teamPhone" required placeholder="+591 700-00000">
+              <span class="error-msg" id="err-teamPhone">Ingresa un teléfono válido (mín. 8 dígitos)</span>
+            </div>
+            <div class="form-group">
+              <label>País *</label>
+              <select id="teamCountry" required>
+                <option value="">Seleccionar país</option>
+                <option value="bolivia">Bolivia</option>
+                <option value="argentina">Argentina</option>
+                <option value="brasil">Brasil</option>
+                <option value="chile">Chile</option>
+                <option value="colombia">Colombia</option>
+                <option value="peru">Perú</option>
+                <option value="otros">Otros</option>
+              </select>
+              <span class="error-msg" id="err-teamCountry">Selecciona un país</span>
+            </div>
+          </div>
+
+          <h3 style="color:var(--green-bright); font-size:1rem; margin:1.5rem 0 1rem;">👥 Jugadores (5 requeridos)</h3>
+          
+          <div id="playersContainer"></div>
+
+          <div style="text-align:center; margin-top:1rem;">
+            <button type="button" class="btn btn-sm" id="addPlayerBtn">+ Agregar Jugador</button>
+          </div>
+
+          <div id="playerError" style="color:var(--red); font-size:0.85rem; margin:1rem 0; display:none;"></div>
+
+          <div class="preview-box" id="previewBox">
+            <h4>📋 Vista Previa de Inscripción</h4>
+            <div id="previewContent"></div>
+          </div>
+
+          <div style="display:flex; gap:1rem; justify-content:center; margin-top:1.5rem; flex-wrap:wrap;">
+            <button type="button" class="btn btn-outline" id="previewBtn">👁️ Vista Previa</button>
+            <button type="submit" class="btn">✅ Enviar Inscripción</button>
+          </div>
+        </form>
+
+        <div style="margin-top:2rem;">
+          <div class="section-title">
+            <h2 style="font-size:1.3rem;">Equipos Inscritos</h2>
+          </div>
+          <div class="filters-bar">
+            <select id="filtroJuegoInscripcion">
+              <option value="todos">Todos los juegos</option>
+              <option value="valorant">Valorant</option>
+              <option value="cs2">CS2</option>
+              <option value="lol">League of Legends</option>
+            </select>
+          </div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Equipo</th>
+                  <th>Juego</th>
+                  <th>Capitán</th>
+                  <th>Código</th>
+                  <th>Estado</th>
+                  <th>Fecha</th>
+                </tr>
+              </thead>
+              <tbody id="inscripcionesTableBody">
+                <tr><td colspan="6" style="text-align:center;padding:1.5rem;color:#555;">No hay equipos inscritos aún.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECCIÓN: PRODUCTOS / TIENDA ===== -->
+    <div class="page-section" id="page-productos">
+      <div class="section-title">
+        <h2>Tienda Oficial</h2>
+        <p>Equípate como un verdadero pro gamer</p>
+      </div>
+
+      <!-- Pills de categoría -->
+      <div class="category-pills" id="categoryPills">
+        <button class="category-pill active" data-categoria="todos">Todos</button>
+        <button class="category-pill" data-categoria="ropa">Ropa y Vestimenta</button>
+        <button class="category-pill" data-categoria="accesorios">Accesorios</button>
+        <button class="category-pill" data-categoria="perifericos">Periféricos Gaming</button>
+        <button class="category-pill" data-categoria="coleccionables">Coleccionables</button>
+        <button class="category-pill" data-categoria="merchandising">Merchandising Ragnarok</button>
+      </div>
+
+      <!-- Filtros avanzados -->
+      <div class="filters-bar">
+        <input type="text" id="searchProductos" placeholder="🔍 Buscar producto por nombre...">
+        <input type="number" id="precioMin" placeholder="Precio mín ($)" min="0">
+        <input type="number" id="precioMax" placeholder="Precio máx ($)" min="0">
+        <select id="filtroDisponibilidad">
+          <option value="todos">Todos</option>
+          <option value="disponible">Disponible</option>
+          <option value="agotado">Agotado</option>
+        </select>
+        <select id="filtroDestacados">
+          <option value="todos">Todos</option>
+          <option value="destacados">Solo Destacados</option>
+        </select>
+        <select id="ordenProductos">
+          <option value="default">Ordenar por...</option>
+          <option value="precio-asc">Precio: Menor a Mayor</option>
+          <option value="precio-desc">Precio: Mayor a Menor</option>
+          <option value="nombre-asc">Nombre: A-Z</option>
+        </select>
+        <button class="btn btn-sm btn-outline" id="resetFiltros">🔄 Limpiar Filtros</button>
+      </div>
+
+      <div id="resultCount" style="text-align:center;color:var(--gray);font-size:0.85rem;margin-bottom:1rem;"></div>
+
+      <div class="cards-grid grid-4" id="productosGrid"></div>
+    </div>
+
+    <!-- ===== SECCIÓN: PATROCINADORES ===== -->
+    <div class="page-section" id="page-patrocinadores">
+      <div class="section-title">
+        <h2>Nuestros Patrocinadores</h2>
+        <p>Gracias al apoyo de nuestras marcas aliadas</p>
+      </div>
+      <div class="cards-grid grid-3">
+        <div class="card">
+          <img src="patrocinador1.jpeg" alt="Patrocinador 1" style="object-fit:contain;height:100px;">
+          <h3>Marca Aliada</h3>
+          <p class="desc">Periféricos gaming de alto rendimiento.</p>
+          <span class="badge">Patrocinador Oficial</span>
+        </div>
+        <div class="card">
+          <img src="patrocinador2.jpeg" alt="Patrocinador 2" style="object-fit:contain;height:100px;">
+          <h3>Hardware Pro</h3>
+          <p class="desc">Proveedor oficial de hardware.</p>
+          <span class="badge">Proveedor Técnico</span>
+        </div>
+        <div class="card">
+          <img src="patrocinador3.jpeg" alt="Patrocinador 3" style="object-fit:contain;height:100px;">
+          <h3>Estrategia Global</h3>
+          <p class="desc">Aliado estratégico en eventos.</p>
+          <span class="badge">Aliado Estratégico</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECCIÓN: EVENTOS Y TIMESTAMP ===== -->
+    <div class="page-section" id="page-eventos">
+      <div class="section-title">
+        <h2>Sistema de Eventos y Timestamp</h2>
+        <p>Reloj en tiempo real y registro de actividades</p>
+      </div>
+
+      <div class="clock-panel">
+        <div class="clock-label">HORA LOCAL — RAGNAROK ESPORTS</div>
+        <div class="clock-time" id="clockTime">00:00:00</div>
+        <div class="clock-date" id="clockDate">Cargando fecha...</div>
+        <div class="clock-timestamp">
+          Timestamp actual: <strong id="clockTimestamp">0</strong> ms
+          <br>
+          <span style="font-size:0.7rem;color:#555;">Última actualización del historial: <span id="lastUpdate">--</span></span>
+        </div>
+      </div>
+
+      <div class="events-stats">
+        <div class="stat-item">
+          <span class="stat-value" id="totalEvents">0</span>
+          <span class="stat-label">Eventos Registrados</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="lastEventName">--</span>
+          <span class="stat-label">Último Evento</span>
+        </div>
+      </div>
+
+      <div class="events-controls">
+        <button class="btn btn-sm" id="btnRefreshEvents">🔄 Actualizar Historial</button>
+        <button class="btn btn-sm btn-danger" id="btnClearEvents">🗑️ Limpiar Registros</button>
+      </div>
+
+      <div class="table-responsive">
+        <table id="eventsTable">
+          <thead>
+            <tr>
+              <th>Evento</th>
+              <th>Descripción</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody id="eventsTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="jquery-demo">
+        <h3>🧪 Prueba de Eventos jQuery</h3>
+        <div class="demo-buttons">
+          <button class="btn btn-sm" id="demoClick">Click</button>
+          <button class="btn btn-sm" id="demoDblClick">Doble Click</button>
+          <button class="btn btn-sm" id="demoHover">Hover</button>
+          <button class="btn btn-sm" id="demoChange">Change</button>
+          <button class="btn btn-sm" id="demoHide">Hide</button>
+          <button class="btn btn-sm" id="demoShow">Show</button>
+          <button class="btn btn-sm" id="demoFadeToggle">FadeToggle</button>
+        </div>
+        <div class="demo-box" id="demoBox">Interactúa con los botones para registrar eventos.</div>
+      </div>
+    </div>
+
+    <!-- ===== SECCIÓN: CONTACTO ===== -->
+    <div class="page-section" id="page-contacto">
+      <div class="section-title">
+        <h2>Contacto</h2>
+        <p>Ponte en contacto con Ragnarok eSports</p>
+      </div>
+
+      <div class="contact-info-grid">
+        <div class="contact-info-card">
+          <span class="contact-icon">📍</span>
+          <h4>Ubicación</h4>
+          <p>Av. Gamer 1234<br>Ciudad de los Videojuegos</p>
+        </div>
+        <div class="contact-info-card">
+          <span class="contact-icon">📞</span>
+          <h4>Teléfono</h4>
+          <p>+591 700-12345<br>+591 700-67890</p>
+        </div>
+        <div class="contact-info-card">
+          <span class="contact-icon">✉️</span>
+          <h4>Email</h4>
+          <p>info@ragnarokesports.com<br>soporte@ragnarokesports.com</p>
+        </div>
+        <div class="contact-info-card">
+          <span class="contact-icon">🕐</span>
+          <h4>Horarios</h4>
+          <p>Lun - Vie: 9:00 - 20:00<br>Sáb - Dom: 10:00 - 18:00</p>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-bottom:2rem;">
+        <div class="social-links">
+          <a href="https://facebook.com/ragnarokesports" target="_blank" title="Facebook">📘</a>
+          <a href="https://instagram.com/ragnarokesports" target="_blank" title="Instagram">📷</a>
+          <a href="https://tiktok.com/@ragnarokesports" target="_blank" title="TikTok">🎵</a>
+          <a href="https://youtube.com/@ragnarokesports" target="_blank" title="YouTube">▶️</a>
+          <a href="https://discord.gg/ragnarokesports" target="_blank" title="Discord">💬</a>
+          <a href="https://wa.me/59170012345" target="_blank" title="WhatsApp">📱</a>
+        </div>
+      </div>
+
+      <div style="max-width:600px; margin:0 auto;">
+        <div class="alert alert-success" id="contactSuccess"></div>
+        <div class="alert alert-error" id="contactError"></div>
+        <form id="formContacto" style="background:var(--card-bg); border:1px solid var(--border); border-radius:16px; padding:2rem;" novalidate>
+          <h3 style="color:var(--green-bright); font-size:1rem; margin-bottom:1rem;">📝 Formulario de Consulta</h3>
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" id="contactName" required placeholder="Tu nombre">
+            <span class="error-msg" id="err-contactName">Este campo es obligatorio</span>
+          </div>
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" id="contactEmail" required placeholder="tu@email.com">
+            <span class="error-msg" id="err-contactEmail">Ingresa un correo válido</span>
+          </div>
+          <div class="form-group">
+            <label>Asunto *</label>
+            <input type="text" id="contactSubject" required placeholder="Motivo de consulta">
+            <span class="error-msg" id="err-contactSubject">Este campo es obligatorio</span>
+          </div>
+          <div class="form-group">
+            <label>Mensaje *</label>
+            <textarea id="contactMessage" rows="4" required placeholder="Escribe tu mensaje..."></textarea>
+            <span class="error-msg" id="err-contactMessage">Este campo es obligatorio</span>
+          </div>
+          <button type="submit" class="btn" style="width:100%;">📨 Enviar Mensaje</button>
+        </form>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // ============================================================
+  // RAGNAROK ESPORTS - PLATAFORMA GAMING
+  // ============================================================
+
+  $(document).ready(function() {
+
+    // ============================================================
+    // 1. CONFIGURACIÓN
+    // ============================================================
+    const STORAGE_KEY = 'ragnarok_events_history_v6';
+    const INSCRIPCIONES_KEY = 'ragnarok_inscripciones_v2';
+    let eventsHistory = [];
+    let inscripciones = [];
+    let productosData = [];
+    let categoriaActual = 'todos';
+
+    // ============================================================
+    // 2. DATOS DE PRODUCTOS
+    // ============================================================
+    const productosBase = [
+      // Ropa y Vestimenta
+      { id: 1, nombre: 'Polera Oficial', categoria: 'ropa', precio: 25, img: 'polerarak.png', desc: 'Diseño exclusivo con logo Ragnarok.', destacado: true, nuevo: false, disponible: true },
+      { id: 2, nombre: 'Gorra Ragnarok', categoria: 'ropa', precio: 15, img: 'gorrarak.png', desc: 'Logo bordado, talla ajustable.', destacado: false, nuevo: true, disponible: true },
+      { id: 3, nombre: 'Hoodie Ragnarok', categoria: 'ropa', precio: 45, img: 'polerarak.png', desc: 'Hoodie con capucha y logo bordado.', destacado: true, nuevo: false, disponible: true },
+      { id: 4, nombre: 'Chaqueta Esports', categoria: 'ropa', precio: 65, img: 'polerarak.png', desc: 'Chaqueta oficial del equipo.', destacado: false, nuevo: true, disponible: true },
+      { id: 5, nombre: 'Camiseta Deportiva', categoria: 'ropa', precio: 30, img: 'polerarak.png', desc: 'Camiseta transpirable para entrenar.', destacado: false, nuevo: false, disponible: true },
+      
+      // Accesorios
+      { id: 6, nombre: 'Tomatodo Gamer', categoria: 'accesorios', precio: 10, img: 'tomatodorak.png', desc: 'Acero inoxidable, 750ml.', destacado: true, nuevo: false, disponible: true },
+      { id: 7, nombre: 'Mochila Gaming', categoria: 'accesorios', precio: 55, img: 'tomatodorak.png', desc: 'Mochila con compartimento para laptop.', destacado: false, nuevo: true, disponible: true },
+      { id: 8, nombre: 'Pulsera Ragnarok', categoria: 'accesorios', precio: 8, img: 'gorrarak.png', desc: 'Pulsera de silicona con logo.', destacado: false, nuevo: false, disponible: true },
+      { id: 9, nombre: 'Llavero Gamer', categoria: 'accesorios', precio: 5, img: 'gorrarak.png', desc: 'Llavero metálico edición limitada.', destacado: false, nuevo: true, disponible: true },
+      { id: 10, nombre: 'Mousepad Gaming', categoria: 'accesorios', precio: 15, img: 'gorrarak.png', desc: 'Mousepad antideslizante RGB.', destacado: false, nuevo: false, disponible: true },
+      
+      // Periféricos Gaming
+      { id: 11, nombre: 'Mouse Gaming RGB', categoria: 'perifericos', precio: 40, img: 'gorrarak.png', desc: 'Mouse con sensor óptico 16000 DPI.', destacado: true, nuevo: false, disponible: true },
+      { id: 12, nombre: 'Teclado Mecánico', categoria: 'perifericos', precio: 85, img: 'gorrarak.png', desc: 'Teclado mecánico RGB switches azules.', destacado: true, nuevo: true, disponible: true },
+      { id: 13, nombre: 'Auriculares Gaming', categoria: 'perifericos', precio: 60, img: 'gorrarak.png', desc: 'Auriculares con micrófono y sonido 7.1.', destacado: false, nuevo: false, disponible: true },
+      { id: 14, nombre: 'Micrófono USB', categoria: 'perifericos', precio: 50, img: 'gorrarak.png', desc: 'Micrófono condensador para streaming.', destacado: false, nuevo: true, disponible: true },
+      { id: 15, nombre: 'Control Gaming', categoria: 'perifericos', precio: 35, img: 'gorrarak.png', desc: 'Control inalámbrico compatible PC/consola.', destacado: false, nuevo: false, disponible: true },
+      
+      // Coleccionables
+      { id: 16, nombre: 'Figura Gaming', categoria: 'coleccionables', precio: 30, img: 'jugador1.png', desc: 'Figura coleccionable de edición limitada.', destacado: true, nuevo: false, disponible: true },
+      { id: 17, nombre: 'Pack de Stickers', categoria: 'coleccionables', precio: 6, img: 'jugador1.png', desc: 'Pack de 10 stickers exclusivos.', destacado: false, nuevo: true, disponible: true },
+      { id: 18, nombre: 'Poster Ragnarok', categoria: 'coleccionables', precio: 12, img: 'jugador1.png', desc: 'Poster oficial del equipo tamaño A2.', destacado: false, nuevo: false, disponible: true },
+      
+      // Merchandising Ragnarok
+      { id: 19, nombre: 'Pack Merchandising', categoria: 'merchandising', precio: 75, img: 'jugador1.png', desc: 'Pack completo de merchandising oficial.', destacado: true, nuevo: false, disponible: true },
+      { id: 20, nombre: 'Artículo Exclusivo', categoria: 'merchandising', precio: 100, img: 'jugador1.png', desc: 'Artículo de colección ultra limitado.', destacado: true, nuevo: true, disponible: false },
+      { id: 21, nombre: 'Taza Ragnarok', categoria: 'merchandising', precio: 12, img: 'tomatodorak.png', desc: 'Taza cerámica con logo del equipo.', destacado: false, nuevo: false, disponible: true },
+      { id: 22, nombre: 'Alfombrilla XL', categoria: 'merchandising', precio: 20, img: 'gorrarak.png', desc: 'Alfombrilla de escritorio XL.', destacado: true, nuevo: false, disponible: true }
+    ];
+
+    productosData = [...productosBase];
+
+    // ============================================================
+    // 3. CARGAR DATOS
+    // ============================================================
+    function loadHistory() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try { eventsHistory = JSON.parse(saved); } catch (e) { eventsHistory = []; }
+      }
+    }
+
+    function saveHistory() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(eventsHistory));
+    }
+
+    function loadInscripciones() {
+      const saved = localStorage.getItem(INSCRIPCIONES_KEY);
+      if (saved) {
+        try { inscripciones = JSON.parse(saved); } catch (e) { inscripciones = []; }
+      }
+    }
+
+    function saveInscripciones() {
+      localStorage.setItem(INSCRIPCIONES_KEY, JSON.stringify(inscripciones));
+    }
+
+    // ============================================================
+    // 4. REGISTRO DE EVENTOS
+    // ============================================================
+    function registrarEvento(nombre, descripcion) {
+      const ahora = new Date();
+      const timestamp = Date.now();
+
+      eventsHistory.unshift({
+        id: timestamp + Math.random(),
+        nombre: nombre,
+        descripcion: descripcion,
+        fecha: ahora.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+        hora: ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }),
+        timestamp: timestamp
+      });
+
+      if (eventsHistory.length > 100) eventsHistory = eventsHistory.slice(0, 100);
+
+      saveHistory();
+      renderizarTablaEventos();
+      actualizarEstadisticas();
+    }
+
+    // ============================================================
+    // 5. RENDERIZAR TABLA EVENTOS
+    // ============================================================
+    function renderizarTablaEventos() {
+      const $tbody = $('#eventsTableBody');
+      $tbody.empty();
+
+      if (eventsHistory.length === 0) {
+        $tbody.html('<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:#555;">No hay eventos registrados. Interactúa con el sitio para comenzar.</td></tr>');
+        return;
+      }
+
+      eventsHistory.forEach(evento => {
+        $tbody.append(`
+          <tr>
+            <td>${evento.nombre}</td>
+            <td>${evento.descripcion}</td>
+            <td>${evento.fecha}</td>
+            <td>${evento.hora}</td>
+            <td class="timestamp-cell">${evento.timestamp.toLocaleString()}</td>
+          </tr>
+        `);
+      });
+    }
+
+    // ============================================================
+    // 6. ESTADÍSTICAS
+    // ============================================================
+    function actualizarEstadisticas() {
+      $('#totalEvents').text(eventsHistory.length);
+      $('#lastEventName').text(eventsHistory.length > 0 ? eventsHistory[0].nombre : '--');
+      
+      const ahora = new Date();
+      $('#lastUpdate').text(ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }));
+    }
+
+    // ============================================================
+    // 7. RELOJ
+    // ============================================================
+    function actualizarReloj() {
+      const ahora = new Date();
+      const horas = String(ahora.getHours()).padStart(2, '0');
+      const minutos = String(ahora.getMinutes()).padStart(2, '0');
+      const segundos = String(ahora.getSeconds()).padStart(2, '0');
+      $('#clockTime').text(`${horas}:${minutos}:${segundos}`);
+
+      const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+      const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+      $('#clockDate').text(`${dias[ahora.getDay()]}, ${ahora.getDate()} de ${meses[ahora.getMonth()]} de ${ahora.getFullYear()}`);
+      $('#clockTimestamp').text(Date.now().toLocaleString());
+    }
+
+    actualizarReloj();
+    setInterval(actualizarReloj, 1000);
+
+    // ============================================================
+    // 8. NAVEGACIÓN
+    // ============================================================
+    function showSection(sectionId) {
+      $('.page-section').removeClass('active').hide();
+      $('#page-' + sectionId).fadeIn(300, function() {
+        $(this).addClass('active');
+      });
+      $('.nav-btn').removeClass('active');
+      $('.nav-btn[data-section="' + sectionId + '"]').addClass('active');
+      $('#mainPanel').scrollTop(0);
+      
+      const nombres = {
+        'inicio': 'Inicio', 'equipo': 'Equipo', 'juegos': 'Juegos',
+        'torneos': 'Torneos', 'inscripcion': 'Inscripción de Equipos',
+        'productos': 'Productos / Tienda', 'patrocinadores': 'Patrocinadores',
+        'eventos': 'Sistema de Eventos', 'contacto': 'Contacto'
+      };
+      registrarEvento('Abrió ' + nombres[sectionId], 'El usuario navegó a la sección ' + nombres[sectionId]);
+    }
+
+    window.showSection = showSection;
+
+    // ============================================================
+    // 9. MENÚ HAMBURGUESA (slideToggle)
+    // ============================================================
+    $('#hamburgerBtn').on('click', function() {
+      $('#sidebar').toggleClass('open');
+      $('#overlay').toggleClass('active');
+      registrarEvento('Menú', 'El usuario abrió/cerró el menú lateral');
+    });
+
+    $('#overlay').on('click', function() {
+      $('#sidebar').removeClass('open');
+      $(this).removeClass('active');
+    });
+
+    $('.nav-btn').on('click', function() {
+      const section = $(this).data('section');
+      showSection(section);
+      $('#sidebar').removeClass('open');
+      $('#overlay').removeClass('active');
+    });
+
+    // ============================================================
+    // 10. INICIALIZACIÓN
+    // ============================================================
+    loadHistory();
+    loadInscripciones();
+    renderizarTablaEventos();
+    actualizarEstadisticas();
+    renderizarProductos();
+    renderizarProductosDestacados();
+    renderizarInscripciones();
+    inicializarJugadores();
+    registrarEvento('Ingreso al Sitio', 'El usuario ingresó a la plataforma Ragnarok eSports');
+
+    // ============================================================
+    // 11. FILTROS DE EQUIPO
+    // ============================================================
+    $('#filtroJuegoEquipo, #filtroRolEquipo').on('change', function() {
+      const juego = $('#filtroJuegoEquipo').val();
+      const rol = $('#filtroRolEquipo').val();
+
+      $('.equipo-card').each(function() {
+        const cardJuego = $(this).data('juego');
+        const cardRol = $(this).data('rol');
+        
+        const matchJuego = juego === 'todos' || cardJuego === juego;
+        const matchRol = rol === 'todos' || cardRol === rol;
+        
+        if (matchJuego && matchRol) {
+          $(this).fadeIn(200);
+        } else {
+          $(this).fadeOut(200);
+        }
+      });
+      
+      registrarEvento('Filtró Equipo', 'Juego: ' + juego + ', Rol: ' + rol);
+    });
+
+    // ============================================================
+    // 12. FILTROS DE TORNEOS
+    // ============================================================
+    $('#filtroJuegoTorneo, #filtroEstadoTorneo').on('change', function() {
+      const juego = $('#filtroJuegoTorneo').val();
+      const estado = $('#filtroEstadoTorneo').val();
+
+      $('.torneo-card').each(function() {
+        const cardJuego = $(this).data('juego');
+        const cardEstado = $(this).data('estado');
+        
+        const matchJuego = juego === 'todos' || cardJuego === juego;
+        const matchEstado = estado === 'todos' || cardEstado === estado;
+        
+        if (matchJuego && matchEstado) {
+          $(this).fadeIn(200);
+        } else {
+          $(this).fadeOut(200);
+        }
+      });
+      
+      registrarEvento('Filtró Torneos', 'Juego: ' + juego + ', Estado: ' + estado);
+    });
+
+    // ============================================================
+    // 13. FILTROS DE PRODUCTOS
+    // ============================================================
+    $('#categoryPills').on('click', '.category-pill', function() {
+      $('#categoryPills .category-pill').removeClass('active');
+      $(this).addClass('active');
+      categoriaActual = $(this).data('categoria');
+      renderizarProductos();
+    });
+
+    $('#searchProductos, #precioMin, #precioMax, #filtroDisponibilidad, #filtroDestacados, #ordenProductos').on('input change', function() {
+      renderizarProductos();
+    });
+
+    $('#resetFiltros').on('click', function() {
+      $('#searchProductos').val('');
+      $('#precioMin').val('');
+      $('#precioMax').val('');
+      $('#filtroDisponibilidad').val('todos');
+      $('#filtroDestacados').val('todos');
+      $('#ordenProductos').val('default');
+      $('#categoryPills .category-pill').removeClass('active');
+      $('#categoryPills .category-pill[data-categoria="todos"]').addClass('active');
+      categoriaActual = 'todos';
+      renderizarProductos();
+      registrarEvento('Filtros', 'El usuario limpió los filtros de productos');
+    });
+
+    // ============================================================
+    // 14. RENDERIZAR PRODUCTOS
+    // ============================================================
+    function renderizarProductos() {
+      const $grid = $('#productosGrid');
+      $grid.empty();
+
+      const busqueda = $('#searchProductos').val().toLowerCase();
+      const precioMin = parseFloat($('#precioMin').val()) || 0;
+      const precioMax = parseFloat($('#precioMax').val()) || Infinity;
+      const disponibilidad = $('#filtroDisponibilidad').val();
+      const destacados = $('#filtroDestacados').val();
+      const orden = $('#ordenProductos').val();
+
+      let filtrados = productosData.filter(p => {
+        const matchBusqueda = p.nombre.toLowerCase().includes(busqueda) || p.desc.toLowerCase().includes(busqueda);
+        const matchCategoria = categoriaActual === 'todos' || p.categoria === categoriaActual;
+        const matchPrecio = p.precio >= precioMin && p.precio <= precioMax;
+        const matchDisponibilidad = disponibilidad === 'todos' || 
+          (disponibilidad === 'disponible' && p.disponible) || 
+          (disponibilidad === 'agotado' && !p.disponible);
+        const matchDestacados = destacados === 'todos' || (destacados === 'destacados' && p.destacado);
+        return matchBusqueda && matchCategoria && matchPrecio && matchDisponibilidad && matchDestacados;
+      });
+
+      if (orden === 'precio-asc') filtrados.sort((a, b) => a.precio - b.precio);
+      else if (orden === 'precio-desc') filtrados.sort((a, b) => b.precio - a.precio);
+      else if (orden === 'nombre-asc') filtrados.sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+      $('#resultCount').text(`Mostrando ${filtrados.length} producto(s)`);
+
+      if (filtrados.length === 0) {
+        $grid.html('<p style="text-align:center;color:var(--gray);grid-column:1/-1;padding:2rem;">No se encontraron productos con los filtros seleccionados.</p>');
+        return;
+      }
+
+      filtrados.forEach(p => {
+        const badgeHtml = p.nuevo ? '<span class="badge badge-new">Nuevo</span>' : 
+                          p.destacado ? '<span class="badge badge-featured">Destacado</span>' : '';
+        const disponibilidadTexto = p.disponible ? 'Disponible' : 'Agotado';
+        const disponibilidadColor = p.disponible ? 'var(--green-bright)' : '#ff4444';
+
+        $grid.append(`
+          <div class="card producto-card">
+            <img src="${p.img}" alt="${p.nombre}">
+            ${badgeHtml}
+            <h3>${p.nombre}</h3>
+            <p class="desc">${p.desc}</p>
+            <p style="font-size:0.75rem;color:var(--gray);text-transform:uppercase;">${p.categoria}</p>
+            <p class="price">$${p.precio}</p>
+            <p style="font-size:0.8rem;color:${disponibilidadColor};font-weight:700;">${disponibilidadTexto}</p>
+            <button class="btn btn-sm toggle-detail" data-target="detail-${p.id}">Ver Detalles</button>
+            <div class="product-detail" id="detail-${p.id}">
+              <h4>📋 DETALLES DEL PRODUCTO</h4>
+              <ul>
+                <li>Categoría: <span>${p.categoria}</span></li>
+                <li>Precio: <span>$${p.precio}</span></li>
+                <li>Disponibilidad: <span>${disponibilidadTexto}</span></li>
+              </ul>
+            </div>
+          </div>
+        `);
+      });
+    }
+
+    // Productos destacados en inicio
+    function renderizarProductosDestacados() {
+      const $grid = $('#productosDestacadosInicio');
+      const destacados = productosData.filter(p => p.destacado && p.disponible).slice(0, 3);
+      
+      destacados.forEach(p => {
+        $grid.append(`
+          <div class="card">
+            <img src="${p.img}" alt="${p.nombre}">
+            <span class="badge badge-featured">Destacado</span>
+            <h3>${p.nombre}</h3>
+            <p class="desc">${p.desc}</p>
+            <p class="price">$${p.precio}</p>
+          </div>
+        `);
+      });
+    }
+
+    // Detalles de productos (fadeToggle)
+    $(document).on('click', '.toggle-detail', function(e) {
+      e.stopPropagation();
+      const targetId = $(this).data('target');
+      const $detail = $('#' + targetId);
+      $detail.fadeToggle(300);
+      $(this).text($detail.is(':visible') ? 'Ocultar Detalles' : 'Ver Detalles');
+    });
+
+    // ============================================================
+    // 15. INSCRIPCIÓN DE EQUIPOS
+    // ============================================================
+    let playerCount = 0;
+
+    function agregarJugador() {
+      playerCount++;
+      const $row = $(`
+        <div class="player-row" data-player="${playerCount}">
+          <div class="form-group" style="margin:0;">
+            <label>Nickname *</label>
+            <input type="text" class="player-nick" required placeholder="Nickname">
+            <span class="error-msg" style="display:none;">Requerido</span>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label>Nombre *</label>
+            <input type="text" class="player-name" required placeholder="Nombre completo">
+            <span class="error-msg" style="display:none;">Requerido</span>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label>Rol *</label>
+            <input type="text" class="player-role" required placeholder="Rol/Posición">
+            <span class="error-msg" style="display:none;">Requerido</span>
+          </div>
+          <button type="button" class="remove-player" title="Eliminar">✕</button>
+        </div>
+      `);
+      $('#playersContainer').append($row);
+    }
+
+    function inicializarJugadores() {
+      $('#playersContainer').empty();
+      playerCount = 0;
+      for (let i = 0; i < 5; i++) agregarJugador();
+    }
+
+    $('#addPlayerBtn').on('click', function() {
+      if ($('.player-row').length >= 7) {
+        alert('Máximo 7 jugadores permitidos.');
+        return;
+      }
+      agregarJugador();
+    });
+
+    $(document).on('click', '.remove-player', function() {
+      if ($('.player-row').length <= 5) {
+        alert('Mínimo 5 jugadores requeridos.');
+        return;
+      }
+      $(this).closest('.player-row').remove();
+    });
+
+    // Validación en vivo
+    function validarEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function validarTelefono(telefono) {
+      const digits = telefono.replace(/\D/g, '');
+      return digits.length >= 8;
+    }
+
+    // Validar campo individual
+    function validarCampo(id, condicion, errorId) {
+      if (condicion) {
+        $('#' + id).removeClass('error').addClass('valid');
+        $('#' + errorId).hide();
+        return true;
+      } else {
+        $('#' + id).removeClass('valid').addClass('error');
+        $('#' + errorId).show();
+        return false;
+      }
+    }
+
+    // Validación en vivo de campos de equipo
+    $('#teamName, #teamCaptain, #teamSubject').on('input', function() {
+      validarCampo($(this).attr('id'), $(this).val().trim() !== '', 'err-' + $(this).attr('id'));
+    });
+
+    $('#teamEmail').on('input', function() {
+      validarCampo('teamEmail', validarEmail($(this).val().trim()), 'err-teamEmail');
+    });
+
+    $('#teamPhone').on('input', function() {
+      validarCampo('teamPhone', validarTelefono($(this).val()), 'err-teamPhone');
+    });
+
+    $('#teamGame, #teamCountry').on('change', function() {
+      validarCampo($(this).attr('id'), $(this).val() !== '', 'err-' + $(this).attr('id'));
+    });
+
+    // Validación en vivo de jugadores
+    $(document).on('input', '.player-nick, .player-name, .player-role', function() {
+      const $row = $(this).closest('.player-row');
+      const $error = $(this).siblings('.error-msg');
+      if ($(this).val().trim() !== '') {
+        $(this).removeClass('error').addClass('valid');
+        $error.hide();
+      } else {
+        $(this).removeClass('valid').addClass('error');
+        $error.show();
+      }
+    });
+
+    // Vista previa
+    $('#previewBtn').on('click', function() {
+      const teamName = $('#teamName').val().trim();
+      const teamGame = $('#teamGame').val();
+      const teamCaptain = $('#teamCaptain').val().trim();
+
+      if (!teamName || !teamGame || !teamCaptain) {
+        $('#inscripcionError').text('⚠️ Completa al menos los datos básicos del equipo para la vista previa.').fadeIn();
+        setTimeout(() => $('#inscripcionError').fadeOut(), 3000);
+        return;
+      }
+
+      const players = [];
+      $('.player-row').each(function() {
+        const nick = $(this).find('.player-nick').val().trim();
+        const name = $(this).find('.player-name').val().trim();
+        const role = $(this).find('.player-role').val().trim();
+        if (nick || name || role) {
+          players.push({ nick, name, role });
+        }
+      });
+
+      let html = `
+        <p><strong>Equipo:</strong> ${teamName}</p>
+        <p><strong>Juego:</strong> ${teamGame.toUpperCase()}</p>
+        <p><strong>Capitán:</strong> ${teamCaptain}</p>
+        <p><strong>Jugadores:</strong> ${players.length}</p>
+        <ul style="margin-top:0.5rem;padding-left:1.5rem;">
+      `;
+      players.forEach(p => {
+        html += `<li style="color:var(--gray);font-size:0.85rem;">${p.nick} - ${p.name} (${p.role})</li>`;
+      });
+      html += `</ul>`;
+
+      $('#previewContent').html(html);
+      $('#previewBox').slideDown(300);
+    });
+
+    // Enviar inscripción
+    $('#formInscripcion').on('submit', function(e) {
+      e.preventDefault();
+      
+      let valido = true;
+      const teamName = $('#teamName').val().trim();
+      const teamGame = $('#teamGame').val();
+      const teamCaptain = $('#teamCaptain').val().trim();
+      const teamEmail = $('#teamEmail').val().trim();
+      const teamPhone = $('#teamPhone').val().trim();
+      const teamCountry = $('#teamCountry').val();
+
+      // Validar campos del equipo
+      if (!teamName) { validarCampo('teamName', false, 'err-teamName'); valido = false; }
+      if (!teamGame) { validarCampo('teamGame', false, 'err-teamGame'); valido = false; }
+      if (!teamCaptain) { validarCampo('teamCaptain', false, 'err-teamCaptain'); valido = false; }
+      if (!validarEmail(teamEmail)) { validarCampo('teamEmail', false, 'err-teamEmail'); valido = false; }
+      if (!validarTelefono(teamPhone)) { validarCampo('teamPhone', false, 'err-teamPhone'); valido = false; }
+      if (!teamCountry) { validarCampo('teamCountry', false, 'err-teamCountry'); valido = false; }
+
+      // Validar jugadores
+      const players = [];
+      let playersValidos = true;
+      $('.player-row').each(function() {
+        const nick = $(this).find('.player-nick').val().trim();
+        const name = $(this).find('.player-name').val().trim();
+        const role = $(this).find('.player-role').val().trim();
+        
+        if (!nick || !name || !role) {
+          playersValidos = false;
+          $(this).find('input').each(function() {
+            if (!$(this).val().trim()) {
+              $(this).addClass('error');
+              $(this).siblings('.error-msg').show();
+            }
+          });
+        } else {
+          players.push({ nick, name, role });
+        }
+      });
+
+      if (!playersValidos || players.length < 5) {
+        $('#playerError').text('⚠️ Se requieren mínimo 5 jugadores completos para inscribir el equipo.').show();
+        valido = false;
+      } else {
+        $('#playerError').hide();
+      }
+
+      if (!valido) {
+        $('#inscripcionError').text('⚠️ Por favor corrige los errores marcados en el formulario.').fadeIn();
+        setTimeout(() => $('#inscripcionError').fadeOut(), 4000);
+        return;
+      }
+
+      const codigo = 'RGN-' + Date.now().toString(36).toUpperCase().slice(-6);
+
+      const inscripcion = {
+        id: Date.now(),
+        codigo: codigo,
+        nombre: teamName,
+        juego: teamGame,
+        capitan: teamCaptain,
+        email: teamEmail,
+        telefono: teamPhone,
+        pais: teamCountry,
+        jugadores: players,
+        fecha: new Date().toLocaleDateString('es-ES'),
+        hora: new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }),
+        estado: 'pendiente'
+      };
+
+      inscripciones.unshift(inscripcion);
+      saveInscripciones();
+      renderizarInscripciones();
+
+      $('#inscripcionError').hide();
+      $('#inscripcionSuccess').html(`✅ ¡Inscripción registrada!<br><strong>Equipo:</strong> ${teamName}<br><strong>Código:</strong> ${codigo}<br><br>Tu equipo está pendiente de aprobación.`).fadeIn();
+      setTimeout(() => $('#inscripcionSuccess').fadeOut(), 6000);
+
+      registrarEvento('Inscripción: ' + teamName, 'Equipo inscrito para ' + teamGame + ' - Código: ' + codigo);
+
+      // Resetear
+      this.reset();
+      inicializarJugadores();
+      $('#previewBox').slideUp(300);
+      $('.form-group input, .form-group select').removeClass('valid error');
+      $('.error-msg').hide();
+    });
+
+    // Renderizar inscripciones
+    function renderizarInscripciones() {
+      const $tbody = $('#inscripcionesTableBody');
+      $tbody.empty();
+
+      const filtro = $('#filtroJuegoInscripcion').val();
+      let filtradas = inscripciones;
+
+      if (filtro !== 'todos') {
+        filtradas = inscripciones.filter(i => i.juego === filtro);
+      }
+
+      if (filtradas.length === 0) {
+        $tbody.html('<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:#555;">No hay equipos inscritos aún.</td></tr>');
+        return;
+      }
+
+      filtradas.forEach(i => {
+        const estadoColor = i.estado === 'aprobada' ? 'var(--green-bright)' : 
+                           i.estado === 'rechazada' ? '#ff4444' : '#ffcc00';
+        $tbody.append(`
+          <tr>
+            <td>${i.nombre}</td>
+            <td>${i.juego.toUpperCase()}</td>
+            <td>${i.capitan}</td>
+            <td class="timestamp-cell">${i.codigo}</td>
+            <td style="color:${estadoColor};font-weight:700;">${i.estado.toUpperCase()}</td>
+            <td>${i.fecha} ${i.hora}</td>
+          </tr>
+        `);
+      });
+    }
+
+    $('#filtroJuegoInscripcion').on('change', renderizarInscripciones);
+
+    // ============================================================
+    // 16. CONTROLES DE EVENTOS
+    // ============================================================
+    $('#btnRefreshEvents').on('click', function() {
+      renderizarTablaEventos();
+      actualizarEstadisticas();
+      registrarEvento('Actualizó Historial', 'El usuario actualizó manualmente el historial');
+    });
+
+    $('#btnClearEvents').on('click', function() {
+      if (confirm('¿Estás seguro de que quieres limpiar todos los registros?')) {
+        eventsHistory = [];
+        saveHistory();
+        renderizarTablaEventos();
+        actualizarEstadisticas();
+        registrarEvento('Limpió Historial', 'El usuario eliminó todos los registros de eventos');
+      }
+    });
+
+    // ============================================================
+    // 17. DEMO JQUERY (hide, show, fadeToggle, etc.)
+    // ============================================================
+    $('#demoClick').on('click', function() {
+      $('#demoBox').html('🖱️ ¡Evento <strong>click()</strong> registrado!').css({
+        'background': 'rgba(22, 163, 74, 0.3)', 'border-color': '#22C55E', 'color': '#fff'
+      });
+      registrarEvento('Demo: Click', 'El usuario hizo click en el botón de demostración');
+    });
+
+    $('#demoDblClick').on('dblclick', function() {
+      $('#demoBox').html('🖱️🖱️ ¡Evento <strong>dblclick()</strong> registrado!').css({
+        'background': 'rgba(34, 197, 94, 0.3)', 'border-color': '#16A34A', 'color': '#fff'
+      });
+      registrarEvento('Demo: Doble Click', 'El usuario hizo doble click en el botón');
+    });
+
+    $('#demoHover').on('mouseenter', function() {
+      $('#demoBox').html('🖱️ ¡Evento <strong>mouseenter()</strong> detectado!').css({
+        'background': 'rgba(22, 163, 74, 0.2)', 'border-color': '#16A34A', 'color': '#fff'
+      });
+      registrarEvento('Demo: Hover', 'El usuario pasó el mouse sobre el botón');
+    }).on('mouseleave', function() {
+      $('#demoBox').html('🖱️ Mouse fuera. Evento <strong>mouseleave()</strong> ejecutado.').css({
+        'background': 'rgba(22, 163, 74, 0.1)', 'border-color': '#16A34A', 'color': '#A3A3A3'
+      });
+    });
+
+    $('#demoChange').on('click', function() {
+      const colores = ['#16A34A', '#22C55E', '#052E16', '#ffffff'];
+      const color = colores[Math.floor(Math.random() * colores.length)];
+      $('#demoBox').html('🎨 ¡Evento <strong>change()</strong> simulado!').css({
+        'background': color + '33', 'border-color': color, 'color': '#fff'
+      });
+      registrarEvento('Demo: Change', 'El usuario simuló un evento change');
+    });
+
+    $('#demoHide').on('click', function() {
+      $('#demoBox').hide(500);
+      registrarEvento('Demo: hide()', 'El usuario ocultó el cuadro de demostración');
+    });
+
+    $('#demoShow').on('click', function() {
+      $('#demoBox').show(500);
+      registrarEvento('Demo: show()', 'El usuario mostró el cuadro de demostración');
+    });
+
+    $('#demoFadeToggle').on('click', function() {
+      $('#demoBox').fadeToggle(500);
+      registrarEvento('Demo: fadeToggle()', 'El usuario alternó la visibilidad con fadeToggle');
+    });
+
+    // ============================================================
+    // 18. FORMULARIO DE CONTACTO CON VALIDACIÓN
+    // ============================================================
+    function validarContacto() {
+      let valido = true;
+      
+      const nombre = $('#contactName').val().trim();
+      const email = $('#contactEmail').val().trim();
+      const asunto = $('#contactSubject').val().trim();
+      const mensaje = $('#contactMessage').val().trim();
+
+      if (!nombre) {
+        $('#contactName').addClass('error');
+        $('#err-contactName').show();
+        valido = false;
+      } else {
+        $('#contactName').removeClass('error').addClass('valid');
+        $('#err-contactName').hide();
+      }
+
+      if (!validarEmail(email)) {
+        $('#contactEmail').addClass('error');
+        $('#err-contactEmail').show();
+        valido = false;
+      } else {
+        $('#contactEmail').removeClass('error').addClass('valid');
+        $('#err-contactEmail').hide();
+      }
+
+      if (!asunto) {
+        $('#contactSubject').addClass('error');
+        $('#err-contactSubject').show();
+        valido = false;
+      } else {
+        $('#contactSubject').removeClass('error').addClass('valid');
+        $('#err-contactSubject').hide();
+      }
+
+      if (!mensaje) {
+        $('#contactMessage').addClass('error');
+        $('#err-contactMessage').show();
+        valido = false;
+      } else {
+        $('#contactMessage').removeClass('error').addClass('valid');
+        $('#err-contactMessage').hide();
+      }
+
+      return valido;
+    }
+
+    // Validación en vivo contacto
+    $('#contactName, #contactSubject, #contactMessage').on('input', function() {
+      if ($(this).val().trim() !== '') {
+        $(this).removeClass('error').addClass('valid');
+        $('#err-' + $(this).attr('id')).hide();
+      }
+    });
+
+    $('#contactEmail').on('input', function() {
+      if (validarEmail($(this).val().trim())) {
+        $(this).removeClass('error').addClass('valid');
+        $('#err-contactEmail').hide();
+      }
+    });
+
+    $('#formContacto').on('submit', function(e) {
+      e.preventDefault();
+      
+      if (!validarContacto()) {
+        $('#contactError').text('⚠️ Por favor corrige los errores en el formulario.').fadeIn();
+        setTimeout(() => $('#contactError').fadeOut(), 3000);
+        return;
+      }
+
+      const nombre = $('#contactName').val().trim();
+      const email = $('#contactEmail').val().trim();
+      const asunto = $('#contactSubject').val().trim();
+
+      $('#contactSuccess').html(`✅ ¡Mensaje enviado correctamente!<br>Gracias ${nombre}, te contactaremos pronto a ${email}.`).fadeIn();
+      registrarEvento('Contacto Enviado', `Mensaje de ${nombre} (${email}): ${asunto}`);
+      
+      this.reset();
+      $('.form-group input, .form-group textarea').removeClass('valid error');
+      
+      setTimeout(() => {
+        $('#contactSuccess').fadeOut();
+      }, 5000);
+    });
+
+  });
+</script>
+
+</body>
+</html>
